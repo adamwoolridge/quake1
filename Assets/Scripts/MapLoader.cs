@@ -46,6 +46,7 @@ public class MapLoader : MonoBehaviour {
             mesh.RecalculateNormals();
             faceObj.AddComponent<MeshFilter>().mesh = mesh;
             faceObj.AddComponent<MeshRenderer>().material = GreyboxMaterial;
+            faceObj.transform.parent = transform;
         }        
     }
 	
