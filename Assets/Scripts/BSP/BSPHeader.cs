@@ -19,11 +19,11 @@ public class BSPHeader
         
         for ( int i = 0; i < (int)DIRECTORY_ENTRY.COUNT; i++ )
         {
-            BSPDirectoryEntry entry = new BSPDirectoryEntry(bspFile);
-            DirectoryEntries.Add(entry);
+            BSPDirectoryEntry entry = new BSPDirectoryEntry( bspFile );
+            DirectoryEntries.Add( entry );
         }
 
-        long modelCount = DirectoryEntries[(int)DIRECTORY_ENTRY.MODELS].size / 92;
+        long modelCount = DirectoryEntries[(int)DIRECTORY_ENTRY.MODELS].size / 64;
         Debug.Log("Model count: " + modelCount);
     }
 }
