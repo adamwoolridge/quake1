@@ -5,7 +5,7 @@ using System.IO;
 
 public class BSPHeader
 {
-    long version;
+    int version;
 
     List<BSPDirectoryEntry> DirectoryEntries;
 
@@ -14,7 +14,8 @@ public class BSPHeader
         DirectoryEntries = new List<BSPDirectoryEntry>();
 
         bspFile.BaseStream.Seek( 0, SeekOrigin.Begin );
-        version = bspFile.ReadUInt32();
+        version = bspFile.ReadInt32();
+        Debug.Log("Version: " + version);
 
         for ( int i = 0; i < (int)DIRECTORY_ENTRY.COUNT; i++ )
         {

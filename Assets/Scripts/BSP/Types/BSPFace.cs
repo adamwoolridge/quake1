@@ -9,10 +9,10 @@ public class BSPFace
     public long edgeListIndex;
     public ushort edgeCount;
     public ushort textureInfoIndex;
-    public char lightingType;
-    public char baseLight;
-    public char lightm0;
-    public char lightm1;
+    public byte lightingType;
+    public byte baseLight;
+    public byte lightm0;
+    public byte lightm1;
     public long lightmap;
 
 	public BSPFace( BinaryReader bspFile )
@@ -22,10 +22,10 @@ public class BSPFace
         edgeListIndex = bspFile.ReadInt32();
         edgeCount = bspFile.ReadUInt16();
         textureInfoIndex = bspFile.ReadUInt16();
-        lightingType = bspFile.ReadChar();
-        baseLight = bspFile.ReadChar();
-        lightm0 = bspFile.ReadChar();
-        lightm1 = bspFile.ReadChar();
+        lightingType = bspFile.ReadByte();
+        baseLight = bspFile.ReadByte();
+        lightm0 = bspFile.ReadByte();
+        lightm1 = bspFile.ReadByte();
         lightmap = bspFile.ReadInt32();
     }   
 }

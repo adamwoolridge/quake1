@@ -10,8 +10,11 @@ public class BSPMap
     public BSPHeader header;
     public List<Vector3> vertices;
     public List<BSPFace> faces;
+    public List<int> faceList;
     public List<BSPEdge> edges;
+    public List<int> edgeList;
     public List<BSPModel> models;
+    
 
     public BSPMap( string mapFileName )
     {
@@ -28,11 +31,11 @@ public class BSPMap
 
     private void LoadFaces( BinaryReader bspFile )
     {
+        // Faces
         faces = new List<BSPFace>();
 
         BSPDirectoryEntry facesEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.FACES);
-
-        long faceCount = facesEntry.size / 20;
+        int faceCount = facesEntry.size / 20;
 
         bspFile.BaseStream.Seek( facesEntry.fileOffset, SeekOrigin.Begin );
 
@@ -40,15 +43,27 @@ public class BSPMap
         {
             faces.Add( new BSPFace( bspFile ) );
         }
+
+        // Face list
+        faceList = new List<int>();
+
+        BSPDirectoryEntry faceListEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.FACE_LIST);
+        int faceListCount = faceListEntry.size / 4;
+
+        bspFile.BaseStream.Seek(faceListEntry.fileOffset, SeekOrigin.Begin);
+
+        for (int i = 0; i < faceListCount; i++)
+        {
+            faceList.Add( bspFile.ReadInt32() );
+        }
     }
 
     private void LoadVertices( BinaryReader bspFile )
-    {
+    {        
     	vertices = new List<Vector3>();
 
 		BSPDirectoryEntry verticesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.MAP_VERTICES );
-
-		long vertCount = verticesEntry.size / 12;
+		int vertCount = verticesEntry.size / 12;
 
 		bspFile.BaseStream.Seek( verticesEntry.fileOffset , SeekOrigin.Begin );
 
@@ -60,11 +75,11 @@ public class BSPMap
 
 	private void LoadEdges( BinaryReader bspFile )
     {
+        // Edges
     	edges = new List<BSPEdge>();
 
 		BSPDirectoryEntry edgesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.EDGES );
-
-		long edgeCount = edgesEntry.size / 4;
+		int edgeCount = edgesEntry.size / 4;
 
 		bspFile.BaseStream.Seek( edgesEntry.fileOffset , SeekOrigin.Begin );
 
@@ -72,6 +87,19 @@ public class BSPMap
 		{
 			edges.Add( new BSPEdge( bspFile.ReadUInt16(), bspFile.ReadUInt16() ) );
 		}
+
+        // Edge list
+        edgeList = new List<int>();
+
+        BSPDirectoryEntry edgeListEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.EDGE_LIST);
+        long edgeListCount = edgeListEntry.size / 4;
+
+        bspFile.BaseStream.Seek(edgeListEntry.fileOffset, SeekOrigin.Begin);
+
+        for (int i = 0; i < edgeListCount; i++)
+        {
+            edgeList.Add(bspFile.ReadInt32());
+        }
     }
 
 
@@ -80,7 +108,6 @@ public class BSPMap
     	models = new List<BSPModel>();
 
 		BSPDirectoryEntry modelEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.MODELS );
-
 		long modelCount = modelEntry.size / 64;
 
     	bspFile.BaseStream.Seek( modelEntry.fileOffset , SeekOrigin.Begin );

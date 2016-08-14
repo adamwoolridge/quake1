@@ -4,13 +4,13 @@ using System.IO;
 
 public class BSPDirectoryEntry
 {
-    public long fileOffset;
-    public long size;
+    public int fileOffset;
+    public int size;
 
     public BSPDirectoryEntry( BinaryReader bspFile )
     {
-        fileOffset = bspFile.ReadUInt32();
-        size = bspFile.ReadUInt32();
+        fileOffset = bspFile.ReadInt32();
+        size = bspFile.ReadInt32();
     }
 }
 
