@@ -9,8 +9,9 @@ public class BSPMap
 
     private BSPHeader header;
     private List<Vector3> vertices;
-    private List<BSPModel> models;
+    private List<BSPFace> faces;   
     private List<BSPEdge> edges;
+    private List<BSPModel> models;
 
     public BSPMap( string mapFileName )
     {
@@ -18,10 +19,27 @@ public class BSPMap
         header = new BSPHeader( bspFile );
 
         LoadVertices( bspFile );
+        LoadFaces( bspFile );
         LoadEdges( bspFile );
         LoadModels( bspFile );
 
         bspFile.Close();
+    }
+
+    private void LoadFaces( BinaryReader bspFile )
+    {
+        faces = new List<BSPFace>();
+
+        BSPDirectoryEntry facesEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.FACES);
+
+        long faceCount = facesEntry.size / 20;
+
+        bspFile.BaseStream.Seek( facesEntry.fileOffset, SeekOrigin.Begin );
+
+        for (int i = 0; i < faceCount; i++)
+        {
+            faces.Add( new BSPFace( bspFile ) );
+        }
     }
 
     private void LoadVertices( BinaryReader bspFile )
