@@ -27,5 +27,5 @@ public class BSPFace
         lightm0 = bspFile.ReadChar();
         lightm1 = bspFile.ReadChar();
         lightmap = bspFile.ReadInt32();
-    }
+    }   
 }

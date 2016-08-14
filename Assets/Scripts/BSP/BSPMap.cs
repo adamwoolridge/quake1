@@ -7,11 +7,11 @@ public class BSPMap
 {
     private BinaryReader bspFile;
 
-    private BSPHeader header;
-    private List<Vector3> vertices;
-    private List<BSPFace> faces;   
-    private List<BSPEdge> edges;
-    private List<BSPModel> models;
+    public BSPHeader header;
+    public List<Vector3> vertices;
+    public List<BSPFace> faces;
+    public List<BSPEdge> edges;
+    public List<BSPModel> models;
 
     public BSPMap( string mapFileName )
     {

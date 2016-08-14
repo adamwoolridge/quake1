@@ -10,6 +10,11 @@ public class MapLoader : MonoBehaviour {
     // Use this for initialization
     void Start () {
         map = new BSPMap(MapFileName);
+
+        foreach (BSPModel model in map.models)
+        {
+            
+        }
 	}
 	
 	// Update is called once per frame
