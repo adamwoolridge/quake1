@@ -268,6 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapFileName: start.bsp
+  GreyboxMaterial: {fileID: 2100000, guid: 0574b0139e5747344b1bb8ebf9018b64, type: 2}
 --- !u!4 &2072273752
 Transform:
   m_ObjectHideFlags: 0

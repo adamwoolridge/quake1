@@ -69,7 +69,12 @@ public class BSPMap
 
 		for ( int i = 0; i < vertCount; i++ )
 		{
-			vertices.Add( new Vector3( bspFile.ReadSingle(), bspFile.ReadSingle(), bspFile.ReadSingle() ) );
+            // Read vertice and flip Y/Z to match Quake 1
+            float x = bspFile.ReadSingle();
+            float y = bspFile.ReadSingle();
+            float z = bspFile.ReadSingle();
+
+            vertices.Add( new Vector3( x, z, y ) );
 		}
     }
 
