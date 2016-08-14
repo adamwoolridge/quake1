@@ -8,10 +8,10 @@ public class BSPMap
 
     private BSPHeader header;
 
-    public BSPMap(string mapFileName)
+    public BSPMap( string mapFileName )
     {
-        bspFile = new BinaryReader(File.Open("Assets/Resources/Maps/" + mapFileName, FileMode.Open));
-        header = new BSPHeader(bspFile);
+        bspFile = new BinaryReader( File.Open("Assets/Resources/Maps/" + mapFileName, FileMode.Open) );
+        header = new BSPHeader( bspFile );
 
         bspFile.Close();
     }

@@ -7,12 +7,10 @@ public class BSPDirectoryEntry
     public long fileOffset;
     public long size;
 
-    public BSPDirectoryEntry(BinaryReader bspFile)
+    public BSPDirectoryEntry( BinaryReader bspFile )
     {
         fileOffset = bspFile.ReadUInt32();
         size = bspFile.ReadUInt32();
-
-        Debug.Log("Offset: " + fileOffset + ". Size: " + size);
     }
 }
 
