@@ -15,15 +15,16 @@ public class BSPHeader
 
         bspFile.BaseStream.Seek( 0, SeekOrigin.Begin );
         version = bspFile.ReadUInt32();
-        Debug.Log( "BSP version: " + version );
-        
+
         for ( int i = 0; i < (int)DIRECTORY_ENTRY.COUNT; i++ )
         {
             BSPDirectoryEntry entry = new BSPDirectoryEntry( bspFile );
             DirectoryEntries.Add( entry );
         }
+    }
 
-        long modelCount = DirectoryEntries[(int)DIRECTORY_ENTRY.MODELS].size / 64;
-        Debug.Log("Model count: " + modelCount);
+    public BSPDirectoryEntry GetDirectoryEntry( DIRECTORY_ENTRY type )
+    {
+    	return DirectoryEntries[ (int)type ];
     }
 }

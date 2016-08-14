@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BSP\BSPDirectoryEntry.cs" />
+     <Compile Include="Assets\Scripts\BSP\BSPEdge.cs" />
      <Compile Include="Assets\Scripts\BSP\BSPHeader.cs" />
      <Compile Include="Assets\Scripts\BSP\BSPMap.cs" />
      <Compile Include="Assets\Scripts\BSP\BSPModel.cs" />
