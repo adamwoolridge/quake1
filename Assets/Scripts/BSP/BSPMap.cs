@@ -14,6 +14,8 @@ public class BSPMap
     public List<BSPEdge> edges;
     public List<int> edgeList;
     public List<BSPModel> models;
+    public List<BSPTexture> textures;
+    public List<BSPTextureSurface> textureSurfaces;
 
     private BSPPalette palette;
 
@@ -25,6 +27,7 @@ public class BSPMap
 
         LoadTextures( bspFile );
         LoadVertices( bspFile );
+        LoadTextureInfo( bspFile );
         LoadFaces( bspFile );
         LoadEdges( bspFile );
         LoadModels( bspFile );
@@ -34,8 +37,10 @@ public class BSPMap
 
     private void LoadTextures( BinaryReader bspFile )
     {
-        BSPDirectoryEntry texturesEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.WALL_TEXTURES);
-        bspFile.BaseStream.Seek(texturesEntry.fileOffset, SeekOrigin.Begin);
+        textures = new List<BSPTexture>();
+
+        BSPDirectoryEntry texturesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.WALL_TEXTURES );
+        bspFile.BaseStream.Seek( texturesEntry.fileOffset, SeekOrigin.Begin );
 
         int textureCount = bspFile.ReadInt32();
 
@@ -46,8 +51,23 @@ public class BSPMap
         
         for ( int i = 0; i < textureCount; i++ )
         {
-            bspFile.BaseStream.Seek(texturesEntry.fileOffset + offsets[ i ], SeekOrigin.Begin);
-            BSPTexture texture = new BSPTexture( bspFile, palette );
+            bspFile.BaseStream.Seek( texturesEntry.fileOffset + offsets[ i ], SeekOrigin.Begin );
+            textures.Add( new BSPTexture( bspFile, palette ) );
+        }
+    }
+
+    private void LoadTextureInfo( BinaryReader bspFile )
+    {
+        textureSurfaces = new List<BSPTextureSurface>();
+
+        BSPDirectoryEntry texInfoEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.FACE_TEXTURE_INFO );
+        bspFile.BaseStream.Seek(texInfoEntry.fileOffset, SeekOrigin.Begin);
+
+        int texInfoCount = texInfoEntry.size / 40;
+
+        for ( int i = 0; i < texInfoCount; i++ )
+        {
+            textureSurfaces.Add( new BSPTextureSurface( bspFile ) );
         }
     }
 
@@ -91,7 +111,7 @@ public class BSPMap
 
 		for ( int i = 0; i < vertCount; i++ )
 		{
-            // Read vertice and flip Y/Z to match Quake 1
+            // Read vertex and flip Y/Z to match Quake 1
             float x = bspFile.ReadSingle();
             float y = bspFile.ReadSingle();
             float z = bspFile.ReadSingle();

@@ -37,7 +37,7 @@ public class BSPTexture
                 index++;
             }
         }
-
+        
         texture.Apply();       
     }
 }

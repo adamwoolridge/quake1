@@ -28,23 +28,34 @@ public class MapLoader : MonoBehaviour {
                 index++;              
             }
             
-            int[] tris = new int[ ( face.edgeCount - 2 ) * 3 ];
-            int tristep = 1;
+            int[] triangles = new int[ ( face.edgeCount - 2 ) * 3 ];
+
+            int step = 1;
+
             for ( int i = 1; i < vertices.Length - 1; i++ )
             {
-                tris[ tristep - 1 ] = 0;
-                tris[ tristep ] = i;
-                tris[ tristep + 1 ] = i + 1;
-                tristep += 3;
+                triangles[ step - 1 ] = 0;
+                triangles[ step ] = i;
+                triangles[ step + 1 ] = i + 1;
+                step += 3;
+            }
+
+            BSPTextureSurface textureSurface = map.textureSurfaces[ face.textureInfoIndex ];
+            Vector2[] uvs = new Vector2 [vertices.Length ];
+            for ( int i = 0; i < vertices.Length; i ++ )
+            {
+                uvs[i].x = Vector2.Dot(vertices[i], textureSurface.u) + textureSurface.uOffset;
+                uvs[i].y = Vector2.Dot(vertices[i], textureSurface.v) + textureSurface.vOffset;
             }
 
             GameObject faceObj = new GameObject();
             Mesh mesh = new Mesh();
             mesh.vertices = vertices;
-            mesh.triangles = tris;
+            mesh.uv = uvs;
+            mesh.triangles = triangles;
             mesh.RecalculateNormals();
             faceObj.AddComponent<MeshFilter>().mesh = mesh;
-            faceObj.AddComponent<MeshRenderer>().material = GreyboxMaterial;
+            faceObj.AddComponent<MeshRenderer>().material.mainTexture = map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].texture;
             faceObj.transform.parent = transform;
         }        
     }
