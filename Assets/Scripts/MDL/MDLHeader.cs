@@ -36,8 +36,7 @@ public class MDLHeader
         boundingRadius = mdlFile.ReadSingle();
         eyePos = new Vector3( mdlFile.ReadSingle(), mdlFile.ReadSingle(), mdlFile.ReadSingle() );
 
-        skinCount = mdlFile.ReadInt32();
-        Debug.Log("Skin count: " + skinCount);
+        skinCount = mdlFile.ReadInt32();        
 
         skinWidth = mdlFile.ReadInt32();
         skinHeight = mdlFile.ReadInt32();

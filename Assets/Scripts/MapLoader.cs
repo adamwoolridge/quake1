@@ -80,7 +80,11 @@ public class MapLoader : MonoBehaviour {
                 mesh.triangles = triangles;
                 mesh.RecalculateNormals();
                 faceObj.AddComponent<MeshFilter>().mesh = mesh;
-                faceObj.AddComponent<MeshRenderer>().material.mainTexture = map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].texture;
+                MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
+
+                rend.material.shader = Shader.Find("Legacy Shaders/Diffuse");
+                rend.material.mainTexture = map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].texture;
+                rend.material.mainTexture.filterMode = FilterMode.Point;
                 faceObj.transform.parent = modelObj.transform;
             }
 
