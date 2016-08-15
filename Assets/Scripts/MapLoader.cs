@@ -7,12 +7,9 @@ public class MapLoader : MonoBehaviour {
     public Material GreyboxMaterial;
 
     private BSPMap map;
-    private BSPPalette palette;
-            
+                
     // Use this for initialization
-    void Start () {
-        palette = new BSPPalette("palette.lmp");
-       
+    void Start () {              
         map = new BSPMap( MapFileName );
       
         foreach (BSPFace face in map.faces)

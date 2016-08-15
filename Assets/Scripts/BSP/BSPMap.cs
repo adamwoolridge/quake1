@@ -14,13 +14,16 @@ public class BSPMap
     public List<BSPEdge> edges;
     public List<int> edgeList;
     public List<BSPModel> models;
-    
+
+    private BSPPalette palette;
 
     public BSPMap( string mapFileName )
     {
+        palette = new BSPPalette("palette.lmp");
         bspFile = new BinaryReader( File.Open("Assets/Resources/Maps/" + mapFileName, FileMode.Open) );
         header = new BSPHeader( bspFile );
 
+        LoadTextures( bspFile );
         LoadVertices( bspFile );
         LoadFaces( bspFile );
         LoadEdges( bspFile );
@@ -29,12 +32,31 @@ public class BSPMap
         bspFile.Close();
     }
 
+    private void LoadTextures( BinaryReader bspFile )
+    {
+        BSPDirectoryEntry texturesEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.WALL_TEXTURES);
+        bspFile.BaseStream.Seek(texturesEntry.fileOffset, SeekOrigin.Begin);
+
+        int textureCount = bspFile.ReadInt32();
+
+        int[] offsets = new int[textureCount];
+
+        for ( int i = 0; i < textureCount; i++ )        
+            offsets[ i ] = bspFile.ReadInt32();    
+        
+        for ( int i = 0; i < textureCount; i++ )
+        {
+            bspFile.BaseStream.Seek(texturesEntry.fileOffset + offsets[ i ], SeekOrigin.Begin);
+            BSPTexture texture = new BSPTexture( bspFile, palette );
+        }
+    }
+
     private void LoadFaces( BinaryReader bspFile )
     {
         // Faces
         faces = new List<BSPFace>();
 
-        BSPDirectoryEntry facesEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.FACES);
+        BSPDirectoryEntry facesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.FACES );
         int faceCount = facesEntry.size / 20;
 
         bspFile.BaseStream.Seek( facesEntry.fileOffset, SeekOrigin.Begin );
@@ -47,7 +69,7 @@ public class BSPMap
         // Face list
         faceList = new List<int>();
 
-        BSPDirectoryEntry faceListEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.FACE_LIST);
+        BSPDirectoryEntry faceListEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.FACE_LIST );
         int faceListCount = faceListEntry.size / 4;
 
         bspFile.BaseStream.Seek(faceListEntry.fileOffset, SeekOrigin.Begin);
@@ -96,7 +118,7 @@ public class BSPMap
         // Edge list
         edgeList = new List<int>();
 
-        BSPDirectoryEntry edgeListEntry = header.GetDirectoryEntry(DIRECTORY_ENTRY.EDGE_LIST);
+        BSPDirectoryEntry edgeListEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.EDGE_LIST );
         long edgeListCount = edgeListEntry.size / 4;
 
         bspFile.BaseStream.Seek(edgeListEntry.fileOffset, SeekOrigin.Begin);

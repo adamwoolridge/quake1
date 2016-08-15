@@ -17,19 +17,19 @@ public class BSPDirectoryEntry
 public enum DIRECTORY_ENTRY
 {
     ENTITIES,
-    PLANES,             // numplanes = size / sizeof(plane)
+    PLANES,            
     WALL_TEXTURES,
     MAP_VERTICES,
     LEAVES_VIS, 
     NODES,
     FACE_TEXTURE_INFO,  
-    FACES,              // numfaces = size/sizeof(face)
+    FACES,             
     LIGHTMAPS,
     CLIPNODES,
     LEAVES,
     FACE_LIST,
     EDGES,
     EDGE_LIST,
-    MODELS,              // nummodels = Size/sizeof(model)
+    MODELS,             
     COUNT = 15
 }
