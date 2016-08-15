@@ -10,8 +10,7 @@ public class MDLSkin
     public MDLSkin( BinaryReader mdlFile, MDLHeader header )
     {
         group = mdlFile.ReadInt32();
-
-        Debug.Log("MDLSkin, group: " + group + " width: " + header.skinWidth + "  , height: " + header.skinHeight);
+        
         int byteCount = header.skinWidth  * header.skinHeight;
 
         textureData = new byte[ byteCount ];

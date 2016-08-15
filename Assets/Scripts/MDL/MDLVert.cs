@@ -14,7 +14,7 @@ public class MDLVert
         {
             v[ i ] = mdlFile.ReadByte();
         }
-               
+       
         normalIndex = mdlFile.ReadByte();
     }
 }

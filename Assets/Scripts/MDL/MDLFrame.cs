@@ -17,13 +17,13 @@ public class MDLFrame
 
         type = mdlFile.ReadInt32();
 
-        Debug.Log("Type: " + type);
+        //Debug.Log("Type: " + type);
 
         boundingBoxMin = new MDLVert( mdlFile );
         boundingBoxMax = new MDLVert( mdlFile );
-        name = new string( mdlFile.ReadChars( 16 ) );
-
-        //Debug.Log(name);
+        
+        byte [] result = mdlFile.ReadBytes(16);
+        name = System.Text.Encoding.Default.GetString(result);                
 
         for ( int i = 0; i < header.vertCount; i++ )
         {
