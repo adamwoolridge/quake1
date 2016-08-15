@@ -4,13 +4,15 @@ using System.Collections;
 public class MapLoader : MonoBehaviour {
 
     public string MapFileName = "";
-
-    private BSPMap map;
-
     public Material GreyboxMaterial;
 
+    private BSPMap map;
+    private BSPPalette palette;
+            
     // Use this for initialization
     void Start () {
+        palette = new BSPPalette("palette.lmp");
+       
         map = new BSPMap( MapFileName );
       
         foreach (BSPFace face in map.faces)
@@ -29,13 +31,13 @@ public class MapLoader : MonoBehaviour {
                 index++;              
             }
             
-            int[] tris = new int[(face.edgeCount - 2) * 3];
+            int[] tris = new int[ ( face.edgeCount - 2 ) * 3 ];
             int tristep = 1;
-            for (int i = 1; i < vertices.Length - 1; i++)
+            for ( int i = 1; i < vertices.Length - 1; i++ )
             {
-                tris[tristep - 1] = 0;
-                tris[tristep] = i;
-                tris[tristep + 1] = i + 1;
+                tris[ tristep - 1 ] = 0;
+                tris[ tristep ] = i;
+                tris[ tristep + 1 ] = i + 1;
                 tristep += 3;
             }
 
