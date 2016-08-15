@@ -13,6 +13,7 @@ public class BSPTextureSurface
 
     public BSPTextureSurface( BinaryReader bspFile )
     {
+        // Read UVs and flip Y/Z to match Quake 1
         float x = bspFile.ReadSingle();
         float y = bspFile.ReadSingle();
         float z = bspFile.ReadSingle();

@@ -13,7 +13,7 @@ public class BSPTexture
 
     public BSPTexture( BinaryReader bspFile, BSPPalette palette )
     {        
-        name = new string(bspFile.ReadChars(16));
+        name = new string( bspFile.ReadChars( 16 ) );
         width = bspFile.ReadInt32();
         height = bspFile.ReadInt32();
         offset = bspFile.ReadInt32();
