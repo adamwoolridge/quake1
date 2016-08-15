@@ -14,6 +14,7 @@ public class MapLoader : MonoBehaviour {
       
         foreach (BSPFace face in map.faces)
         {
+            // Vertices
             Vector3 [] vertices = new Vector3[ face.edgeCount ];
 
             int index = 0;
@@ -28,6 +29,7 @@ public class MapLoader : MonoBehaviour {
                 index++;              
             }
             
+            // Triangles
             int[] triangles = new int[ ( face.edgeCount - 2 ) * 3 ];
 
             int step = 1;
@@ -40,14 +42,17 @@ public class MapLoader : MonoBehaviour {
                 step += 3;
             }
 
+            // UVs
             BSPTextureSurface textureSurface = map.textureSurfaces[ face.textureInfoIndex ];
-            Vector2[] uvs = new Vector2 [vertices.Length ];
-            for ( int i = 0; i < vertices.Length; i ++ )
+            Vector2[] uvs = new Vector2[ face.edgeCount ];
+         
+            for ( int i = 0; i < face.edgeCount; i ++ )
             {
-                uvs[i].x = Vector2.Dot(vertices[i], textureSurface.u) + textureSurface.uOffset;
-                uvs[i].y = Vector2.Dot(vertices[i], textureSurface.v) + textureSurface.vOffset;
+                uvs[i].x = ( ( Vector3.Dot( vertices[ i ], textureSurface.u ) + textureSurface.uOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].width );
+                uvs[i].y = ( ( Vector3.Dot( vertices[ i ], textureSurface.v ) + textureSurface.vOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].height );
             }
-
+                    
+            // Create the mesh for the face
             GameObject faceObj = new GameObject();
             Mesh mesh = new Mesh();
             mesh.vertices = vertices;
