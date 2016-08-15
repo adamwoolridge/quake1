@@ -14,8 +14,7 @@ public class BSPHeader
         DirectoryEntries = new List<BSPDirectoryEntry>();
 
         bspFile.BaseStream.Seek( 0, SeekOrigin.Begin );
-        version = bspFile.ReadInt32();
-        Debug.Log("Version: " + version);
+        version = bspFile.ReadInt32();        
 
         for ( int i = 0; i < (int)DIRECTORY_ENTRY.COUNT; i++ )
         {

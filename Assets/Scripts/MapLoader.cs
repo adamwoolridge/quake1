@@ -11,58 +11,74 @@ public class MapLoader : MonoBehaviour {
     // Use this for initialization
     void Start () {              
         map = new BSPMap( MapFileName );
-      
-        foreach (BSPFace face in map.faces)
+
+        int curModelCount = 0;
+
+        foreach ( BSPModel model in map.models )
         {
-            // Vertices
-            Vector3 [] vertices = new Vector3[ face.edgeCount ];
+            GameObject modelObj = new GameObject("model_" + curModelCount);
+            modelObj.transform.parent = transform;
 
-            int index = 0;
+            int findex = 0;
 
-            for ( int i = (int)face.edgeListIndex; i < (int)face.edgeListIndex + face.edgeCount; i++ )
+            for ( int f = 0; f < model.faceCount; f++)
             {
-                if ( map.edgeList[ (int)face.edgeListIndex + index ] < 0 )                
-                    vertices[index] = map.vertices[ map.edges[ Mathf.Abs( map.edgeList[ i ] ) ].startIndex ];                
-                else                
-                    vertices[index] = map.vertices[ map.edges[ map.edgeList[ i ] ].endIndex ];
+                findex = (int)model.faceIndex + f;
 
-                index++;              
+                BSPFace face = map.faces[ findex ];
+
+                // Vertices
+                Vector3[] vertices = new Vector3[face.edgeCount];
+
+                int index = 0;
+
+                for (int i = (int)face.edgeListIndex; i < (int)face.edgeListIndex + face.edgeCount; i++)
+                {
+                    if (map.edgeList[(int)face.edgeListIndex + index] < 0)
+                        vertices[index] = map.vertices[map.edges[Mathf.Abs(map.edgeList[i])].startIndex];
+                    else
+                        vertices[index] = map.vertices[map.edges[map.edgeList[i]].endIndex];
+
+                    index++;
+                }
+
+                // Triangles
+                int[] triangles = new int[(face.edgeCount - 2) * 3];
+
+                int step = 1;
+
+                for (int i = 1; i < vertices.Length - 1; i++)
+                {
+                    triangles[step - 1] = 0;
+                    triangles[step] = i;
+                    triangles[step + 1] = i + 1;
+                    step += 3;
+                }
+
+                // UVs
+                BSPTextureSurface textureSurface = map.textureSurfaces[face.textureInfoIndex];
+                Vector2[] uvs = new Vector2[face.edgeCount];
+
+                for (int i = 0; i < face.edgeCount; i++)
+                {
+                    uvs[i].x = ((Vector3.Dot(vertices[i], textureSurface.u) + textureSurface.uOffset) / (float)map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].width);
+                    uvs[i].y = ((Vector3.Dot(vertices[i], textureSurface.v) + textureSurface.vOffset) / (float)map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].height);
+                }
+
+                // Create the mesh for the face
+                GameObject faceObj = new GameObject();
+                Mesh mesh = new Mesh();
+                mesh.vertices = vertices;
+                mesh.uv = uvs;
+                mesh.triangles = triangles;
+                mesh.RecalculateNormals();
+                faceObj.AddComponent<MeshFilter>().mesh = mesh;
+                faceObj.AddComponent<MeshRenderer>().material.mainTexture = map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].texture;
+                faceObj.transform.parent = modelObj.transform;
             }
-            
-            // Triangles
-            int[] triangles = new int[ ( face.edgeCount - 2 ) * 3 ];
 
-            int step = 1;
-
-            for ( int i = 1; i < vertices.Length - 1; i++ )
-            {
-                triangles[ step - 1 ] = 0;
-                triangles[ step ] = i;
-                triangles[ step + 1 ] = i + 1;
-                step += 3;
-            }
-
-            // UVs
-            BSPTextureSurface textureSurface = map.textureSurfaces[ face.textureInfoIndex ];
-            Vector2[] uvs = new Vector2[ face.edgeCount ];
-         
-            for ( int i = 0; i < face.edgeCount; i ++ )
-            {
-                uvs[i].x = ( ( Vector3.Dot( vertices[ i ], textureSurface.u ) + textureSurface.uOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].width );
-                uvs[i].y = ( ( Vector3.Dot( vertices[ i ], textureSurface.v ) + textureSurface.vOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].height );
-            }
-                    
-            // Create the mesh for the face
-            GameObject faceObj = new GameObject();
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertices;
-            mesh.uv = uvs;
-            mesh.triangles = triangles;
-            mesh.RecalculateNormals();
-            faceObj.AddComponent<MeshFilter>().mesh = mesh;
-            faceObj.AddComponent<MeshRenderer>().material.mainTexture = map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].texture;
-            faceObj.transform.parent = transform;
-        }        
+            curModelCount++;
+        }      
     }
 	
 	// Update is called once per frame
