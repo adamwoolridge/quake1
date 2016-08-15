@@ -5,6 +5,7 @@ public class MapLoader : MonoBehaviour {
 
     public string MapFileName = "";
     public Material GreyboxMaterial;
+    public bool IgnoreTriggers = true;
 
     private BSPMap map;
                 
@@ -26,6 +27,9 @@ public class MapLoader : MonoBehaviour {
                 findex = (int)model.faceIndex + f;
 
                 BSPFace face = map.faces[ findex ];
+
+                if (IgnoreTriggers && map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].name.Contains("trigger"))
+                    continue;
 
                 // Vertices
                 Vector3[] vertices = new Vector3[ face.edgeCount ];
