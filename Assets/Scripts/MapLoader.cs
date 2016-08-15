@@ -10,7 +10,10 @@ public class MapLoader : MonoBehaviour {
     private BSPMap map;
                 
     // Use this for initialization
-    void Start () {              
+    void Start () {
+
+        MDL soliderMdl = new MDL("soldier.mdl");
+
         map = new BSPMap( MapFileName );
 
         int curModelCount = 0;
