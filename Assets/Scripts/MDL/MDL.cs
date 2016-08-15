@@ -25,6 +25,8 @@ public class MDL
         LoadTextureCoords( mdlFile );
         LoadTriangles( mdlFile );
         LoadFrames( mdlFile );
+
+        DrawFrame(0);
     }
 
     private void LoadSkins( BinaryReader mdlFile )
@@ -57,5 +59,32 @@ public class MDL
 
         for (int i = 0; i < header.frameCount; i++)
             frames.Add( new MDLFrame( mdlFile, header ) );
+    }
+
+    public void DrawFrame( int frame )
+    {
+        Vector3 [] allVerts = new Vector3[ header.vertCount ];
+        //int[] triangles = new int[ header.triCount];
+
+
+        for ( int i = 0; i < header.triCount; i++ )
+        {
+            Vector3[] vertices = new Vector3[ 3];
+
+            for ( int v = 0; v < 3; v ++ )
+            {
+                MDLVert thisVert = frames[frame].verts[triangles[i].vertexIndexes[v]];
+                vertices[v] = new Vector3();
+                vertices[v].x = (header.scale.x * thisVert.v[0]) + header.translate[0];
+                vertices[v].y = (header.scale.y * thisVert.v[2]) + header.translate[2];
+                vertices[v].z = (header.scale.z * thisVert.v[1]) + header.translate[1];
+
+                
+            }
+
+            Debug.DrawLine(vertices[0], vertices[1], Color.white, 10000f);
+            Debug.DrawLine(vertices[1], vertices[2], Color.white, 10000f);
+            Debug.DrawLine(vertices[2], vertices[0], Color.white, 10000f);
+        }
     }
 }
