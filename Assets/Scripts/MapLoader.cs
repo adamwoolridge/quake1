@@ -16,7 +16,7 @@ public class MapLoader : MonoBehaviour {
 
         foreach ( BSPModel model in map.models )
         {
-            GameObject modelObj = new GameObject("model_" + curModelCount);
+            GameObject modelObj = new GameObject( "model_" + curModelCount );
             modelObj.transform.parent = transform;
 
             int findex = 0;
