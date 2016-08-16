@@ -9,11 +9,11 @@ public class MDLVert
 
     public MDLVert( BinaryReader mdlFile)
     {        
-        v = new byte[ 3 ];                   
-        for ( int i = 0; i < 3; i++ )
-        {
-            v[ i ] = mdlFile.ReadByte();
-        }
+        v = new byte[ 3 ];
+
+        v[0] = mdlFile.ReadByte();
+        v[2] = mdlFile.ReadByte();
+        v[1] = mdlFile.ReadByte();
        
         normalIndex = mdlFile.ReadByte();
     }

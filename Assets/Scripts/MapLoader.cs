@@ -8,11 +8,14 @@ public class MapLoader : MonoBehaviour {
     public bool IgnoreTriggers = true;
 
     private BSPMap map;
-                
-    // Use this for initialization
-    void Start () {
 
-        MDL soliderMdl = new MDL("soldier.mdl");
+    MDL soldierMdl;
+    private int frameIndex = 0;
+
+    // Use this for initialization
+    void Start ()
+    {
+        soldierMdl = new MDL("soldier.mdl");
 
         map = new BSPMap( MapFileName );
 
@@ -94,6 +97,15 @@ public class MapLoader : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+	    if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            frameIndex++;
+            soldierMdl.DrawFrame(frameIndex);
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            frameIndex--;
+            soldierMdl.DrawFrame(frameIndex);
+        }
+    }
 }

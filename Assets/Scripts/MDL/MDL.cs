@@ -14,9 +14,16 @@ public class MDL
     public List<MDLFrame> frames;
 
     private BinaryReader mdlFile;
+    private BSPPalette palette;
+
+    private Vector3 [] renderVerts;
+    private int[] renderTris;
+    private Vector2[] renderUVs;
+    private Mesh mesh;
 
     public MDL( string fileName )
-    {                        
+    {
+        palette = new BSPPalette("palette.lmp");
         mdlFile = new BinaryReader( File.Open( "Assets/Resources/Models/" + fileName, FileMode.Open ) );
 
         header = new MDLHeader( mdlFile );
@@ -26,7 +33,7 @@ public class MDL
         LoadTriangles( mdlFile );
         LoadFrames( mdlFile );
 
-        DrawFrame(0);
+        BuildMesh();        
     }
 
     private void LoadSkins( BinaryReader mdlFile )
@@ -34,7 +41,7 @@ public class MDL
         skins = new List<MDLSkin>();
 
         for ( int i = 0; i < header.skinCount; i++ )        
-            skins.Add( new MDLSkin( mdlFile, header ) );        
+            skins.Add( new MDLSkin( mdlFile, header, palette ) );        
     }
 
     private void LoadTextureCoords( BinaryReader mdlFile )
@@ -61,26 +68,49 @@ public class MDL
             frames.Add( new MDLFrame( mdlFile, header ) );
     }
 
+    private void BuildMesh()
+    {
+        renderVerts = new Vector3[ header.triCount * 3 ];
+        renderTris = new int[ header.triCount * 3];
+        renderUVs = new Vector2[ header.triCount * 3 ];
+
+        DrawFrame(0);
+
+        GameObject faceObj = new GameObject();
+        mesh = new Mesh();
+        mesh.vertices = renderVerts;
+        mesh.uv = renderUVs;
+        mesh.triangles = renderTris;
+        mesh.RecalculateNormals();
+        faceObj.AddComponent<MeshFilter>().mesh = mesh;
+        MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
+        rend.material.shader = Shader.Find("Legacy Shaders/Diffuse");
+        rend.material.mainTexture = skins[0].texture;
+        rend.material.mainTexture.filterMode = FilterMode.Point;
+
+     
+    }
+
     // Just getting it working, will clean up when it works
     public void DrawFrame( int frame )
     {
-        Vector3 [] allVerts = new Vector3[ header.vertCount ];
-        int[] tris = new int[ header.triCount * 3];
-        Vector2[] uvs = new Vector2[ header.vertCount ];
+        if (mesh!=null)
+            renderVerts = mesh.vertices;
 
-        for ( int i = 0; i < header.triCount; i++ )
+        int count = 0;        
+
+        for (int i = 0; i < header.triCount; i++)
         {
-            Vector3[] vertices = new Vector3[ 3 ];
-
-            for ( int v = 0; v < 3; v ++ )
+            for (int v = 0; v < 3; v++)
             {
                 MDLVert thisVert = frames[ frame ].verts[ triangles[ i ].vertexIndexes[ v ] ];
-                int index = triangles[ i ].vertexIndexes[ v ];
+                int index = count;
 
-                allVerts[ index ] = new Vector3();
-                allVerts[ index ].x = ( header.scale.x * thisVert.v[ 0 ] ) + header.translate[ 0 ];
-                allVerts[ index ].y = ( header.scale.y * thisVert.v[ 2 ] ) + header.translate[ 2 ];
-                allVerts[ index ].z = ( header.scale.z * thisVert.v[ 1 ] ) + header.translate[ 1 ];
+                if (renderVerts[index] == null) renderVerts[index] = new Vector3();
+
+                renderVerts[index].x = (header.scale.x * thisVert.v[0]) + header.translate[0];
+                renderVerts[index].y = (header.scale.y * thisVert.v[1]) + header.translate[1];
+                renderVerts[index].z = (header.scale.z * thisVert.v[2]) + header.translate[2];
 
                 float s = texCoords[triangles[i].vertexIndexes[v]].s;
                 float t = texCoords[triangles[i].vertexIndexes[v]].t;
@@ -90,24 +120,20 @@ public class MDL
                     s += (float)header.skinWidth * 0.5f;
                 }
 
-                s = (s + 0.5f) / header.skinWidth;
-                t = (t + 0.5f) / header.skinHeight;
+                s = (s + 0.5f) / (float)header.skinWidth;
+                t = (t + 0.5f) / (float)header.skinHeight;
 
-                uvs[index] = new Vector2(s, t);
+                renderUVs[index] = new Vector2(s, t);
+                
+                count++;
             }
 
-            tris[ i * 3 ] = triangles[ i ].vertexIndexes[ 0 ];
-            tris[ i * 3 + 1 ] = triangles[ i ].vertexIndexes[ 1 ];
-            tris[ i * 3 + 2 ] = triangles[ i ].vertexIndexes[ 2 ];            
+            renderTris[i * 3] = count - 3;
+            renderTris[i * 3 + 1] = count - 2;
+            renderTris[i * 3 + 2] = count - 1;
         }
 
-        GameObject faceObj = new GameObject();
-        Mesh mesh = new Mesh();
-        mesh.vertices = allVerts;        
-        mesh.triangles = tris;
-        mesh.uv = uvs;
-        mesh.RecalculateNormals();
-        faceObj.AddComponent<MeshFilter>().mesh = mesh;
-        MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
+        if (mesh!=null)
+            mesh.vertices = renderVerts;
     }
 }
