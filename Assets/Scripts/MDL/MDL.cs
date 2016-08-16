@@ -7,6 +7,7 @@ using System.IO;
 
 public class MDL
 {
+    public string Name;
     public MDLHeader header;    
     public List<MDLSkin> skins;
     public List<MDLTexCoord> texCoords;
@@ -21,8 +22,10 @@ public class MDL
     private Vector2[] renderUVs;
     private Mesh mesh;
 
+    
     public MDL( string fileName )
     {
+        Name = fileName;
         palette = new BSPPalette("palette.lmp");
         mdlFile = new BinaryReader( File.Open( "Assets/Resources/Models/" + fileName, FileMode.Open ) );
 
@@ -76,7 +79,7 @@ public class MDL
 
         DrawFrame(0);
 
-        GameObject faceObj = new GameObject();
+        GameObject faceObj = new GameObject(Name);
         mesh = new Mesh();
         mesh.vertices = renderVerts;
         mesh.uv = renderUVs;
