@@ -32,12 +32,19 @@ public class MDLHeader
         version = mdlFile.ReadInt32();
 
         scale = new Vector3( mdlFile.ReadSingle() , mdlFile.ReadSingle() , mdlFile.ReadSingle() );
+        float y = scale.y;
+        scale.y = scale.z;
+        scale.z = y;
+
         translate = new Vector3( mdlFile.ReadSingle(), mdlFile.ReadSingle(), mdlFile.ReadSingle() );
+        y = translate.y;
+        translate.y = translate.z;
+        translate.z = y;
+
         boundingRadius = mdlFile.ReadSingle();
         eyePos = new Vector3( mdlFile.ReadSingle(), mdlFile.ReadSingle(), mdlFile.ReadSingle() );
 
         skinCount = mdlFile.ReadInt32();        
-
         skinWidth = mdlFile.ReadInt32();
         skinHeight = mdlFile.ReadInt32();
 
