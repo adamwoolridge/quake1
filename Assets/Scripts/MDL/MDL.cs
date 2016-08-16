@@ -69,6 +69,9 @@ public class MDL
 
         for (int i = 0; i < header.frameCount; i++)
             frames.Add( new MDLFrame( mdlFile, header ) );
+
+        for (int i = 0; i < header.frameCount; i++)
+            Debug.Log("Frame " + i + ": " + frames[i].name);
     }
 
     private void BuildMesh()
@@ -77,24 +80,26 @@ public class MDL
         renderTris = new int[ header.triCount * 3 ];
         renderUVs = new Vector2[ header.triCount * 3 ];
 
-        DrawFrame( 0 );
+        SetFrame( 0 );
 
-        GameObject faceObj = new GameObject( Name );
+        GameObject modelObj = new GameObject( Name );
         mesh = new Mesh();
         mesh.vertices = renderVerts;
         mesh.uv = renderUVs;
         mesh.triangles = renderTris;
         mesh.RecalculateNormals();
-        faceObj.AddComponent<MeshFilter>().mesh = mesh;
+        modelObj.AddComponent<MeshFilter>().mesh = mesh;
+        modelObj.AddComponent<MDLAnimator>();
 
-        MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
+        MeshRenderer rend = modelObj.AddComponent<MeshRenderer>();
         rend.material.shader = Shader.Find( "Legacy Shaders/Diffuse" );
         rend.material.mainTexture = skins[ 0 ].texture;
         rend.material.mainTexture.filterMode = FilterMode.Point;     
+
     }
 
     // Just getting it working, will clean up when it works
-    public void DrawFrame( int frame )
+    public void SetFrame( int frame )
     {
         if ( mesh != null ) renderVerts = mesh.vertices;
 
