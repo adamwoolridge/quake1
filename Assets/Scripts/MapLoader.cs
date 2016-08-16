@@ -100,12 +100,12 @@ public class MapLoader : MonoBehaviour {
 	    if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             frameIndex++;
-            soldierMdl.DrawFrame(frameIndex);
+            soldierMdl.SetFrame(frameIndex);
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             frameIndex--;
-            soldierMdl.DrawFrame(frameIndex);
+            soldierMdl.SetFrame(frameIndex);
         }
     }
 }

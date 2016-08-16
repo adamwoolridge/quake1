@@ -68,10 +68,7 @@ public class MDL
         frames = new List<MDLFrame>();
 
         for (int i = 0; i < header.frameCount; i++)
-            frames.Add( new MDLFrame( mdlFile, header ) );
-
-        for (int i = 0; i < header.frameCount; i++)
-            Debug.Log("Frame " + i + ": " + frames[i].name);
+            frames.Add( new MDLFrame( mdlFile, header ) );        
     }
 
     private void BuildMesh()
