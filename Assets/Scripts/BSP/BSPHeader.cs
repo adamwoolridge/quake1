@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 
 public class BSPHeader
-{
-    int version;
-
+{    
     List<BSPDirectoryEntry> DirectoryEntries;
 
     public BSPHeader( BinaryReader bspFile )
@@ -14,7 +12,8 @@ public class BSPHeader
         DirectoryEntries = new List<BSPDirectoryEntry>();
 
         bspFile.BaseStream.Seek( 0, SeekOrigin.Begin );
-        version = bspFile.ReadInt32();        
+
+        bspFile.ReadInt32(); // skip version
 
         for ( int i = 0; i < (int)DIRECTORY_ENTRY.COUNT; i++ )
         {

@@ -74,69 +74,64 @@ public class MDL
     private void BuildMesh()
     {
         renderVerts = new Vector3[ header.triCount * 3 ];
-        renderTris = new int[ header.triCount * 3];
+        renderTris = new int[ header.triCount * 3 ];
         renderUVs = new Vector2[ header.triCount * 3 ];
 
-        DrawFrame(0);
+        DrawFrame( 0 );
 
-        GameObject faceObj = new GameObject(Name);
+        GameObject faceObj = new GameObject( Name );
         mesh = new Mesh();
         mesh.vertices = renderVerts;
         mesh.uv = renderUVs;
         mesh.triangles = renderTris;
         mesh.RecalculateNormals();
         faceObj.AddComponent<MeshFilter>().mesh = mesh;
-        MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
-        rend.material.shader = Shader.Find("Legacy Shaders/Diffuse");
-        rend.material.mainTexture = skins[0].texture;
-        rend.material.mainTexture.filterMode = FilterMode.Point;
 
-     
+        MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
+        rend.material.shader = Shader.Find( "Legacy Shaders/Diffuse" );
+        rend.material.mainTexture = skins[ 0 ].texture;
+        rend.material.mainTexture.filterMode = FilterMode.Point;     
     }
 
     // Just getting it working, will clean up when it works
     public void DrawFrame( int frame )
     {
-        if (mesh!=null)
-            renderVerts = mesh.vertices;
+        if ( mesh != null ) renderVerts = mesh.vertices;
 
-        int count = 0;        
+        int index = 0;
 
-        for (int i = 0; i < header.triCount; i++)
+        for ( int i = 0; i < header.triCount; i++ )
         {
-            for (int v = 0; v < 3; v++)
+            for ( int v = 0; v < 3; v++ )
             {
                 MDLVert thisVert = frames[ frame ].verts[ triangles[ i ].vertexIndexes[ v ] ];
-                int index = count;
+                             
+                renderVerts[ index ].x = ( header.scale.x * thisVert.v[ 0 ] ) + header.translate[ 0 ];
+                renderVerts[ index ].y = ( header.scale.y * thisVert.v[ 1 ] ) + header.translate[ 1 ];
+                renderVerts[ index ].z = ( header.scale.z * thisVert.v[ 2 ] ) + header.translate[ 2 ];
 
-                if (renderVerts[index] == null) renderVerts[index] = new Vector3();
+                float s = texCoords[ triangles[ i ].vertexIndexes[ v ] ].s;
+                float t = texCoords[ triangles[ i ].vertexIndexes[ v ] ].t;
 
-                renderVerts[index].x = (header.scale.x * thisVert.v[0]) + header.translate[0];
-                renderVerts[index].y = (header.scale.y * thisVert.v[1]) + header.translate[1];
-                renderVerts[index].z = (header.scale.z * thisVert.v[2]) + header.translate[2];
-
-                float s = texCoords[triangles[i].vertexIndexes[v]].s;
-                float t = texCoords[triangles[i].vertexIndexes[v]].t;
-
-                if (triangles[i].facesFront != 1 && texCoords[triangles[i].vertexIndexes[v]].onSeam != 0)
+                if ( triangles[ i ].facesFront != 1 && texCoords[ triangles[ i ].vertexIndexes[ v ] ].onSeam != 0 )
                 {
                     s += (float)header.skinWidth * 0.5f;
                 }
 
-                s = (s + 0.5f) / (float)header.skinWidth;
-                t = (t + 0.5f) / (float)header.skinHeight;
+                s = ( s + 0.5f ) / (float)header.skinWidth;
+                t = ( t + 0.5f ) / (float)header.skinHeight;
 
-                renderUVs[index] = new Vector2(s, t);
+                renderUVs[ index ].x = s;
+                renderUVs[ index ].y = t;
                 
-                count++;
+                index++;
             }
 
-            renderTris[i * 3] = count - 3;
-            renderTris[i * 3 + 1] = count - 2;
-            renderTris[i * 3 + 2] = count - 1;
+            renderTris[ i * 3 ] = index - 3;
+            renderTris[ i * 3 + 1 ] = index - 2;
+            renderTris[ i * 3 + 2 ] = index - 1;
         }
 
-        if (mesh!=null)
-            mesh.vertices = renderVerts;
+        if ( mesh!=null ) mesh.vertices = renderVerts;
     }
 }
