@@ -16,6 +16,7 @@ public class BSPMap
     public List<BSPModel> models;
     public List<BSPTexture> textures;
     public List<BSPTextureSurface> textureSurfaces;
+    public List<BSPEntity> entities;
 
     private BSPPalette palette;
 
@@ -168,13 +169,26 @@ public class BSPMap
     }
 
     private void LoadEntities( BinaryReader bspFile )
-    {        
-        BSPDirectoryEntry entitiesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.ENTITIES );
-        
+    {
+        entities = new List<BSPEntity>();
+
+        BSPDirectoryEntry entitiesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.ENTITIES );        
         bspFile.BaseStream.Seek( entitiesEntry.fileOffset, SeekOrigin.Begin );
 
-        char[] entityTextBuffer =  bspFile.ReadChars( entitiesEntry.size / 2 );
+        string entityText = new string(  bspFile.ReadChars( entitiesEntry.size / 2 ) );
 
-        Debug.Log( new string( entityTextBuffer ) );              
+        StringReader reader = new StringReader(entityText);
+        {
+            string line = string.Empty;
+            do
+            {                
+                line = reader.ReadLine();
+                if ( line != null )
+                {
+                    if ( line == "{" )                    
+                        entities.Add( new BSPEntity( reader ) );                    
+                }
+            } while ( line != null );
+        }        
     }
 }
