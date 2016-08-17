@@ -16,8 +16,6 @@ public class MapLoader : MonoBehaviour {
     {
         LoadMap();
 
-        MDL soldierMdl = new MDL( "player.mdl" );
-
         BSPEntity spawnEnt = map.entities.FirstOrDefault( ent => ent.KeyValues[ "classname" ] == "info_player_start" );
         Camera.position = spawnEnt.GetVector3( "origin" );
     }

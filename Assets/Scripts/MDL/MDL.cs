@@ -13,6 +13,8 @@ public class MDL
     public List<MDLTexCoord> texCoords;
     public List<MDLTriangle> triangles;
     public List<MDLFrame> frames;
+    public GameObject go;
+    public Mesh mesh;
 
     private BinaryReader mdlFile;
     private BSPPalette palette;
@@ -20,7 +22,7 @@ public class MDL
     private Vector3 [] renderVerts;
     private int[] renderTris;
     private Vector2[] renderUVs;
-    private Mesh mesh;
+    
 
     
     public MDL( string fileName )
@@ -79,17 +81,17 @@ public class MDL
 
         SetFrame( 0,0,0 );
 
-        GameObject modelObj = new GameObject( Name );
+        go = new GameObject( Name );
         mesh = new Mesh();
         mesh.vertices = renderVerts;
         mesh.uv = renderUVs;
         mesh.triangles = renderTris;
         mesh.RecalculateNormals();
-        modelObj.AddComponent<MeshFilter>().mesh = mesh;
-        MDLAnimator animator = modelObj.AddComponent<MDLAnimator>();
+        go.AddComponent<MeshFilter>().mesh = mesh;
+        MDLAnimator animator = go.AddComponent<MDLAnimator>();
         animator.mdl = this;
 
-        MeshRenderer rend = modelObj.AddComponent<MeshRenderer>();
+        MeshRenderer rend = go.AddComponent<MeshRenderer>();
         rend.material.shader = Shader.Find( "Legacy Shaders/Diffuse" );
         rend.material.mainTexture = skins[ 0 ].texture;
         rend.material.mainTexture.filterMode = FilterMode.Point;     
