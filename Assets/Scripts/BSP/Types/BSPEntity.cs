@@ -26,4 +26,10 @@ public class BSPEntity
             }
         } while ( line != null );
     }
+
+    public Vector3 GetVector3(string name)
+    {
+        string [] tokens = KeyValues[name].Split(null);        
+        return new Vector3(float.Parse(tokens[0]), float.Parse(tokens[2]), float.Parse(tokens[1]));
+    }
 }

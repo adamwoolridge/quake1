@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class MapLoader : MonoBehaviour {
 
     public string MapFileName = "";
     public Material GreyboxMaterial;
     public bool IgnoreTriggers = true;
+
+    public Transform Camera;
 
     private BSPMap map;
 
@@ -15,20 +18,28 @@ public class MapLoader : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        LoadMap();
+
         soldierMdl = new MDL("soldier.mdl");
 
-        map = new BSPMap( MapFileName );
+        BSPEntity spawnEnt = map.entities.FirstOrDefault(ent => ent.KeyValues["classname"] == "info_player_start");
+        Camera.position = spawnEnt.GetVector3("origin");
+    }
+
+    private void LoadMap()
+    {
+        map = new BSPMap(MapFileName);
 
         int curModelCount = 0;
 
-        foreach ( BSPModel model in map.models )
+        foreach (BSPModel model in map.models)
         {
             GameObject modelObj = new GameObject( "model_" + curModelCount );
             modelObj.transform.parent = transform;
 
             int findex = 0;
 
-            for ( int f = 0; f < model.faceCount; f++ )
+            for (int f = 0; f < model.faceCount; f++)
             {
                 findex = (int)model.faceIndex + f;
 
@@ -42,12 +53,12 @@ public class MapLoader : MonoBehaviour {
 
                 int index = 0;
 
-                for ( int i = (int)face.edgeListIndex; i < (int)face.edgeListIndex + face.edgeCount; i++ )
+                for (int i = (int)face.edgeListIndex; i < (int)face.edgeListIndex + face.edgeCount; i++)
                 {
-                    if ( map.edgeList[ (int)face.edgeListIndex + index ] < 0 )
-                        vertices[ index ] = map.vertices[ map.edges[ Mathf.Abs( map.edgeList[ i ] ) ].startIndex ];
+                    if (map.edgeList[(int)face.edgeListIndex + index] < 0)
+                        vertices[index] = map.vertices[map.edges[Mathf.Abs(map.edgeList[i])].startIndex];
                     else
-                        vertices[ index ] = map.vertices[ map.edges[ map.edgeList[ i ] ].endIndex ];
+                        vertices[index] = map.vertices[map.edges[map.edgeList[i]].endIndex];
 
                     index++;
                 }
@@ -57,11 +68,11 @@ public class MapLoader : MonoBehaviour {
 
                 int step = 1;
 
-                for ( int i = 1; i < vertices.Length - 1; i++ )
+                for (int i = 1; i < vertices.Length - 1; i++)
                 {
-                    triangles[ step - 1 ] = 0;
-                    triangles[ step ] = i;
-                    triangles[ step + 1 ] = i + 1;
+                    triangles[step - 1] = 0;
+                    triangles[step] = i;
+                    triangles[step + 1] = i + 1;
                     step += 3;
                 }
 
@@ -69,10 +80,10 @@ public class MapLoader : MonoBehaviour {
                 BSPTextureSurface textureSurface = map.textureSurfaces[ face.textureInfoIndex ];
                 Vector2[] uvs = new Vector2[ face.edgeCount ];
 
-                for ( int i = 0; i < face.edgeCount; i++ )
+                for (int i = 0; i < face.edgeCount; i++)
                 {
-                    uvs[ i ].x = ( ( Vector3.Dot( vertices[ i ], textureSurface.u ) + textureSurface.uOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].width );
-                    uvs[ i ].y = ( ( Vector3.Dot( vertices[ i ], textureSurface.v ) + textureSurface.vOffset ) / (float)map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].height );
+                    uvs[i].x = ((Vector3.Dot(vertices[i], textureSurface.u) + textureSurface.uOffset) / (float)map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].width);
+                    uvs[i].y = ((Vector3.Dot(vertices[i], textureSurface.v) + textureSurface.vOffset) / (float)map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].height);
                 }
 
                 // Create the mesh for the face
@@ -86,14 +97,15 @@ public class MapLoader : MonoBehaviour {
                 MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
 
                 rend.material.shader = Shader.Find("Legacy Shaders/Diffuse");
-                rend.material.mainTexture = map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].texture;
+                rend.material.mainTexture = map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].texture;
                 rend.material.mainTexture.filterMode = FilterMode.Point;
                 faceObj.transform.parent = modelObj.transform;
             }
 
             curModelCount++;
-        }      
+        }
     }
+        
 	
 	// Update is called once per frame
 	void Update () {

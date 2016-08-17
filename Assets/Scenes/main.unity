@@ -147,7 +147,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 2000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -267,8 +267,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b222fe5e26a36419310afa7df3189f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapFileName: start.bsp
+  MapFileName: e1m1.bsp
   GreyboxMaterial: {fileID: 2100000, guid: 0574b0139e5747344b1bb8ebf9018b64, type: 2}
+  IgnoreTriggers: 1
+  Camera: {fileID: 236099260}
 --- !u!4 &2072273752
 Transform:
   m_ObjectHideFlags: 0
