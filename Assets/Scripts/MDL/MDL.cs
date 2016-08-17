@@ -77,7 +77,7 @@ public class MDL
         renderTris = new int[ header.triCount * 3 ];
         renderUVs = new Vector2[ header.triCount * 3 ];
 
-        SetFrame( 0 );
+        SetFrame( 0,0,0 );
 
         GameObject modelObj = new GameObject( Name );
         mesh = new Mesh();
@@ -86,7 +86,8 @@ public class MDL
         mesh.triangles = renderTris;
         mesh.RecalculateNormals();
         modelObj.AddComponent<MeshFilter>().mesh = mesh;
-        modelObj.AddComponent<MDLAnimator>();
+        MDLAnimator animator = modelObj.AddComponent<MDLAnimator>();
+        animator.mdl = this;
 
         MeshRenderer rend = modelObj.AddComponent<MeshRenderer>();
         rend.material.shader = Shader.Find( "Legacy Shaders/Diffuse" );
@@ -96,7 +97,7 @@ public class MDL
     }
 
     // Just getting it working, will clean up when it works
-    public void SetFrame( int frame )
+    public void SetFrame( int frame, int nextFrame, float delta )
     {
         if ( mesh != null ) renderVerts = mesh.vertices;
 
@@ -107,10 +108,11 @@ public class MDL
             for ( int v = 0; v < 3; v++ )
             {
                 MDLVert thisVert = frames[ frame ].verts[ triangles[ i ].vertexIndexes[ v ] ];
-                             
-                renderVerts[ index ].x = ( header.scale.x * thisVert.v[ 0 ] ) + header.translate[ 0 ];
-                renderVerts[ index ].y = ( header.scale.y * thisVert.v[ 1 ] ) + header.translate[ 1 ];
-                renderVerts[ index ].z = ( header.scale.z * thisVert.v[ 2 ] ) + header.translate[ 2 ];
+                MDLVert nextVert = frames[ nextFrame ].verts[ triangles[ i ].vertexIndexes[ v ] ];
+                                
+                renderVerts[ index ].x = header.scale.x * ( thisVert.v[ 0 ] + delta * ( nextVert.v[ 0 ] - thisVert.v[ 0 ] ) ) + header.translate[ 0 ];
+                renderVerts[ index ].y = header.scale.y * ( thisVert.v[ 1 ] + delta * ( nextVert.v[ 1 ] - thisVert.v[ 1 ] ) ) + header.translate[ 1 ];
+                renderVerts[ index ].z = header.scale.z * ( thisVert.v[ 2 ] + delta * ( nextVert.v[ 2 ] - thisVert.v[ 2 ] ) ) + header.translate[ 2 ];
 
                 float s = texCoords[ triangles[ i ].vertexIndexes[ v ] ].s;
                 float t = texCoords[ triangles[ i ].vertexIndexes[ v ] ].t;

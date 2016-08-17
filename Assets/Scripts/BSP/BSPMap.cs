@@ -175,8 +175,8 @@ public class BSPMap
         BSPDirectoryEntry entitiesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.ENTITIES );        
         bspFile.BaseStream.Seek( entitiesEntry.fileOffset, SeekOrigin.Begin );
 
-        string entityText = new string(  bspFile.ReadChars( entitiesEntry.size ) );
-        
+        string entityText = new string(  bspFile.ReadChars( entitiesEntry.size ) );        
+
         StringReader reader = new StringReader(entityText);
         {
             string line = string.Empty;

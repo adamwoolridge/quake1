@@ -7,45 +7,41 @@ public class MapLoader : MonoBehaviour {
     public string MapFileName = "";
     public Material GreyboxMaterial;
     public bool IgnoreTriggers = true;
-
     public Transform Camera;
 
-    private BSPMap map;
-
-    MDL soldierMdl;
-    private int frameIndex = 0;
+    private BSPMap map;       
 
     // Use this for initialization
     void Start ()
     {
         LoadMap();
 
-        soldierMdl = new MDL("soldier.mdl");
+        MDL soldierMdl = new MDL( "player.mdl" );
 
-        BSPEntity spawnEnt = map.entities.FirstOrDefault(ent => ent.KeyValues["classname"] == "info_player_start");
-        Camera.position = spawnEnt.GetVector3("origin");
+        BSPEntity spawnEnt = map.entities.FirstOrDefault( ent => ent.KeyValues[ "classname" ] == "info_player_start" );
+        Camera.position = spawnEnt.GetVector3( "origin" );
     }
 
     private void LoadMap()
     {
-        map = new BSPMap(MapFileName);
+        map = new BSPMap( MapFileName );
 
         int curModelCount = 0;
 
-        foreach (BSPModel model in map.models)
+        foreach ( BSPModel model in map.models )
         {
             GameObject modelObj = new GameObject( "model_" + curModelCount );
             modelObj.transform.parent = transform;
 
             int findex = 0;
 
-            for (int f = 0; f < model.faceCount; f++)
+            for ( int f = 0; f < model.faceCount; f++ )
             {
                 findex = (int)model.faceIndex + f;
 
                 BSPFace face = map.faces[ findex ];
 
-                if (IgnoreTriggers && map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].name.Contains("trigger"))
+                if ( IgnoreTriggers && map.textures[ (int)map.textureSurfaces[ face.textureInfoIndex ].textureIndex ].name.Contains( "trigger" ) )
                     continue;
 
                 // Vertices
@@ -109,15 +105,6 @@ public class MapLoader : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            frameIndex++;
-            soldierMdl.SetFrame(frameIndex);
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            frameIndex--;
-            soldierMdl.SetFrame(frameIndex);
-        }
+	   
     }
 }
