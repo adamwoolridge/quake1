@@ -31,6 +31,7 @@ public class BSPMap
         LoadFaces( bspFile );
         LoadEdges( bspFile );
         LoadModels( bspFile );
+        LoadEntities( bspFile );
 
         bspFile.Close();
     }
@@ -164,5 +165,16 @@ public class BSPMap
     		BSPModel model = new BSPModel( bspFile );	
     		models.Add( model );
     	}
+    }
+
+    private void LoadEntities( BinaryReader bspFile )
+    {        
+        BSPDirectoryEntry entitiesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.ENTITIES );
+        
+        bspFile.BaseStream.Seek( entitiesEntry.fileOffset, SeekOrigin.Begin );
+
+        char[] entityTextBuffer =  bspFile.ReadChars( entitiesEntry.size / 2 );
+
+        Debug.Log( new string( entityTextBuffer ) );              
     }
 }
