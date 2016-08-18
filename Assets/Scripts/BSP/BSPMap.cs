@@ -18,6 +18,8 @@ public class BSPMap
     public List<BSPTextureSurface> textureSurfaces;
     public List<BSPEntity> entities;
     public List<BSPNode> nodes;
+    public List<BSPPlane> planes;
+    public List<BSPLeaf> leaves;
 
     private BSPPalette palette;
 
@@ -27,11 +29,13 @@ public class BSPMap
         bspFile = new BinaryReader( File.Open("Assets/Resources/Maps/" + mapFileName, FileMode.Open) );
         header = new BSPHeader( bspFile );
 
-        LoadEntities(bspFile);
+        LoadEntities( bspFile );
+        LoadPlanes( bspFile );
         LoadTextures( bspFile );
         LoadVertices( bspFile );
         LoadNodes( bspFile );
         LoadTextureInfo( bspFile );
+        LoadLeaves( bspFile );
         LoadFaces( bspFile );
         LoadEdges( bspFile );
         LoadModels( bspFile );
@@ -183,6 +187,32 @@ public class BSPMap
     		BSPModel model = new BSPModel( bspFile );	
     		models.Add( model );
     	}
+    }
+
+    private void LoadLeaves( BinaryReader bspFile )
+    {
+        leaves = new List<BSPLeaf>();
+
+        BSPDirectoryEntry leafEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.LEAVES );
+        long leafCount = leafEntry.size / 28;
+
+        bspFile.BaseStream.Seek( leafEntry.fileOffset, SeekOrigin.Begin );
+
+        for ( int i = 0; i < leafCount; i++ )
+            leaves.Add( new BSPLeaf( bspFile ) );
+    }
+
+    private void LoadPlanes(BinaryReader bspFile )
+    {
+        planes = new List<BSPPlane>();
+
+        BSPDirectoryEntry planesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.PLANES );
+        long planeCount = planesEntry.size / 20;
+
+        bspFile.BaseStream.Seek(planesEntry.fileOffset, SeekOrigin.Begin);
+
+        for (int i = 0; i < planeCount; i++)        
+            planes.Add( new BSPPlane( bspFile ) );        
     }
 
     private void LoadEntities( BinaryReader bspFile )

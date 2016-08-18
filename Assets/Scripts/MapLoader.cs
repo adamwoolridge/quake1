@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 public class MapLoader : MonoBehaviour {
@@ -10,7 +11,8 @@ public class MapLoader : MonoBehaviour {
     public Transform Camera;
 
     private BSPMap map;       
-
+    
+    
     // Use this for initialization
     void Start ()
     {
@@ -90,7 +92,7 @@ public class MapLoader : MonoBehaviour {
                 faceObj.AddComponent<MeshFilter>().mesh = mesh;
                 MeshRenderer rend = faceObj.AddComponent<MeshRenderer>();
 
-                rend.material.shader = Shader.Find("Legacy Shaders/Diffuse");
+                rend.material.shader = Shader.Find("Unlit/Texture");
                 rend.material.mainTexture = map.textures[(int)map.textureSurfaces[face.textureInfoIndex].textureIndex].texture;
                 rend.material.mainTexture.filterMode = FilterMode.Point;
                 faceObj.transform.parent = modelObj.transform;
