@@ -17,8 +17,15 @@ public class BSPNode
         front = bspFile.ReadUInt16();
         back = bspFile.ReadUInt16();
 
-        boundingBox = new BSPBoundingBox(new Vector3(bspFile.ReadSingle(), bspFile.ReadSingle(), bspFile.ReadSingle()),
-                                          new Vector3(bspFile.ReadSingle(), bspFile.ReadSingle(), bspFile.ReadSingle()));
+        int x = bspFile.ReadInt16();
+        int y = bspFile.ReadInt16();
+        int z = bspFile.ReadInt16();
+
+        int x2 = bspFile.ReadInt16();
+        int y2 = bspFile.ReadInt16();
+        int z2 = bspFile.ReadInt16();
+
+        boundingBox = new BSPBoundingBox(new Vector3(x, z, y), new Vector3(x2, z2, y2));
 
         faceIndex = bspFile.ReadUInt16();
         faceCount = bspFile.ReadUInt16();

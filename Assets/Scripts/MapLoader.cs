@@ -101,10 +101,23 @@ public class MapLoader : MonoBehaviour {
             curModelCount++;
         }
     }
-        
-	
-	// Update is called once per frame
-	void Update () {
-	   
+        	
+    void OnDrawGizmos()
+    {
+        if (map == null) return;
+
+        Gizmos.color = Color.blue;
+
+        foreach (BSPNode node in map.nodes)
+        {
+            Gizmos.DrawWireCube(node.boundingBox.min + ((node.boundingBox.max- node.boundingBox.min) / 2), node.boundingBox.max - node.boundingBox.min);
+        }
+
+        Gizmos.color = Color.grey;
+
+        foreach (BSPLeaf leaf in map.leaves)
+        {
+            Gizmos.DrawWireCube(leaf.boundingBox.min + ((leaf.boundingBox.max - leaf.boundingBox.min) / 2), leaf.boundingBox.max - leaf.boundingBox.min);
+        }
     }
 }
