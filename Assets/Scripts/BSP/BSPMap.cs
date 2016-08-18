@@ -17,6 +17,7 @@ public class BSPMap
     public List<BSPTexture> textures;
     public List<BSPTextureSurface> textureSurfaces;
     public List<BSPEntity> entities;
+    public List<BSPNode> nodes;
 
     private BSPPalette palette;
 
@@ -26,14 +27,15 @@ public class BSPMap
         bspFile = new BinaryReader( File.Open("Assets/Resources/Maps/" + mapFileName, FileMode.Open) );
         header = new BSPHeader( bspFile );
 
+        LoadEntities(bspFile);
         LoadTextures( bspFile );
         LoadVertices( bspFile );
+        LoadNodes( bspFile );
         LoadTextureInfo( bspFile );
         LoadFaces( bspFile );
         LoadEdges( bspFile );
         LoadModels( bspFile );
-        LoadEntities( bspFile );
-
+      
         bspFile.Close();
     }
 
@@ -122,7 +124,22 @@ public class BSPMap
 		}
     }
 
-	private void LoadEdges( BinaryReader bspFile )
+    private void LoadNodes( BinaryReader bspFile )
+    {
+        nodes = new List<BSPNode>();
+
+        BSPDirectoryEntry nodesEntry = header.GetDirectoryEntry( DIRECTORY_ENTRY.NODES );
+        int nodeCount = nodesEntry.size / 36;
+
+        bspFile.BaseStream.Seek( nodesEntry.fileOffset, SeekOrigin.Begin );
+
+        for ( int i = 0; i < nodeCount; i++ )
+        {
+            nodes.Add (new BSPNode( bspFile ) );
+        }
+
+    }
+    private void LoadEdges( BinaryReader bspFile )
     {
         // Edges
     	edges = new List<BSPEdge>();
