@@ -27,6 +27,22 @@ public class BSPEntity
         } while ( line != null );
     }
 
+    public int GetInt(string name)
+    {
+        string val = "";
+
+        if (KeyValues.TryGetValue(name, out val))
+        {
+            return int.Parse(val);
+        }
+        else
+        {
+            return 0;
+        }
+
+        
+    }
+
     public Vector3 GetVector3(string name)
     {
         string [] tokens = KeyValues[name].Split(null);        

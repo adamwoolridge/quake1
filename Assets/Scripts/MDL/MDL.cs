@@ -22,9 +22,7 @@ public class MDL
     private Vector3 [] renderVerts;
     private int[] renderTris;
     private Vector2[] renderUVs;
-    
-
-    
+        
     public MDL( string fileName )
     {
         Name = fileName;
@@ -37,6 +35,8 @@ public class MDL
         LoadTextureCoords( mdlFile );
         LoadTriangles( mdlFile );
         LoadFrames( mdlFile );
+
+        mdlFile.Close();
 
         BuildMesh();        
     }
@@ -90,12 +90,12 @@ public class MDL
         go.AddComponent<MeshFilter>().mesh = mesh;
         MDLAnimator animator = go.AddComponent<MDLAnimator>();
         animator.mdl = this;
+        animator.PlayAnim(0, 6);
 
         MeshRenderer rend = go.AddComponent<MeshRenderer>();
         rend.material.shader = Shader.Find( "Legacy Shaders/Diffuse" );
         rend.material.mainTexture = skins[ 0 ].texture;
         rend.material.mainTexture.filterMode = FilterMode.Point;     
-
     }
 
     // Just getting it working, will clean up when it works

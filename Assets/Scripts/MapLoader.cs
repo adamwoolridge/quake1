@@ -9,10 +9,11 @@ public class MapLoader : MonoBehaviour {
     public Material GreyboxMaterial;
     public bool IgnoreTriggers = true;
     public Transform Camera;
+    
+    public bool DebugDrawBSP = true;
 
     private BSPMap map;       
-    
-    
+        
     // Use this for initialization
     void Start ()
     {
@@ -20,6 +21,8 @@ public class MapLoader : MonoBehaviour {
 
         BSPEntity spawnEnt = map.entities.FirstOrDefault( ent => ent.KeyValues[ "classname" ] == "info_player_start" );
         Camera.position = spawnEnt.GetVector3( "origin" );
+
+        SpawnMonsters();        
     }
 
     private void LoadMap()
@@ -102,8 +105,23 @@ public class MapLoader : MonoBehaviour {
         }
     }
         	
+    private void SpawnMonsters()
+    {
+        List<BSPEntity> monsterEnts = map.entities.Where(ent=>ent.KeyValues["classname"].Contains("monster")).ToList();
+
+        foreach (BSPEntity ent in monsterEnts)
+        {
+            GameObject monsterGO = new GameObject(ent.KeyValues["classname"]);
+
+            Monster monster = monsterGO.AddComponent<Monster>();
+            monster.Init(ent);            
+        }
+    }
+
     void OnDrawGizmos()
     {
+        if (!DebugDrawBSP) return;
+
         if (map == null) return;
 
         Gizmos.color = Color.blue;
